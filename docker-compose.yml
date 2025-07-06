@@ -1,0 +1,25 @@
+services:
+  # アプリケーションサービスを定義
+  app:
+    # 現在のディレクトリにあるDockerfileを使ってイメージをビルド
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # ホストマシンの現在のディレクトリ (.) をコンテナ内の /app ディレクトリにマウント
+    # ただし、node_modulesは下の名前付きボリュームを使用するため同期されない
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    # コンテナの内部ポート (5173) をホストマシンのポート (5173) にマッピング
+    # プロジェクト初期化後は開発サーバーにアクセスするために必要
+    ports:
+      - "5173:5173"
+    # 標準入力をオープンにして、ttyを割り当てる (対話的な操作のために必要)
+    stdin_open: true
+    tty: true
+    # コンテナ起動時に実行するデフォルトコマンドは指定しない
+    # コマンドは docker compose run または docker compose up で指定する
+
+# node_modulesを格納するための名前付きボリュームを定義
+volumes:
+  node_modules:
