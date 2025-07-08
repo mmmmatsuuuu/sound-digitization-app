@@ -4,58 +4,55 @@ export const drawWaveform = (canvas: HTMLCanvasElement, audioBuffer: AudioBuffer
 
   const width = canvas.width;
   const height = canvas.height;
-  const originalData = audioBuffer.getChannelData(0); // Assuming mono for simplicity
+  const originalData = audioBuffer.getChannelData(0);
   const originalSampleRate = audioBuffer.sampleRate;
 
   ctx.clearRect(0, 0, width, height);
 
-  // Draw waveform
-  ctx.fillStyle = '#000'; // Use fillStyle for bars
+  // --- Data Processing for Visualization ---
+  const resampleRatio = originalSampleRate / targetSampleRate;
+  const resampledLength = Math.floor(originalData.length / resampleRatio);
+  const processedData = new Float32Array(resampledLength);
 
-  const amp = height / 2;
+  for (let i = 0; i < resampledLength; i++) {
+    const originalIndex = i * resampleRatio;
+    const indexPrev = Math.floor(originalIndex);
+    // Simple nearest-neighbor for a blocky look, could also use interpolation
+    let sample = originalData[indexPrev];
 
-  // Calculate how many original samples correspond to one pixel on the canvas
-  // This ensures the entire audio duration is mapped to the canvas width
-  const samplesPerPixel = originalData.length / width;
-
-  // Calculate the visual downsampling ratio
-  const visualSampleRatio = originalSampleRate / targetSampleRate;
-
-  for (let i = 0; i < width; i++) {
-    let min = 1.0;
-    let max = -1.0;
-
-    // Determine the range of original samples for the current pixel column
-    const startOriginalIndex = Math.floor(i * samplesPerPixel);
-    const endOriginalIndex = Math.min(originalData.length, Math.floor((i + 1) * samplesPerPixel));
-
-    for (let j = startOriginalIndex; j < endOriginalIndex; j++) {
-      // Only consider samples that would exist at the targetSampleRate for visual representation
-      // This is a simplified visual downsampling.
-      if (j % visualSampleRatio < 1) { 
-        let datum = originalData[j];
-
-        // Apply quantization for visualization
-        if (targetBitDepth > 0) {
-          const maxVal = Math.pow(2, targetBitDepth - 1) - 1; // For signed values
-          datum = Math.round(datum * maxVal) / maxVal;
-        }
-
-        if (datum < min) {
-          min = datum;
-        }
-        if (datum > max) {
-          max = datum;
-        }
-      }
+    // Quantization
+    if (targetBitDepth > 0) {
+      const maxVal = Math.pow(2, targetBitDepth - 1) - 1;
+      sample = Math.round(sample * maxVal) / maxVal;
     }
-
-    // Draw a filled rectangle (bar) for each pixel column
-    const yMin = (1 + min) * amp;
-    const yMax = (1 + max) * amp;
-    ctx.fillRect(i, yMin, 1, yMax - yMin);
+    processedData[i] = sample;
   }
 
-  
-  
+  // --- Drawing Logic for Blocky Waveform ---
+  ctx.fillStyle = '#000';
+  const amp = height / 2;
+
+  // Calculate the width of each "bar" to make it look blocky
+  const barWidth = Math.max(1, width / processedData.length);
+
+  ctx.beginPath();
+  for (let i = 0; i < processedData.length; i++) {
+    const x = (i / processedData.length) * width;
+    const y = (1 - processedData[i]) * amp;
+
+    ctx.rect(x, y, barWidth, 2); // Draw a small rectangle for each sample point
+  }
+  ctx.fill();
+
+  // Draw vertical stems for each sample point to enhance the blocky feel
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = barWidth; // Make lines slightly thinner than the bar width
+  ctx.beginPath();
+  for (let i = 0; i < processedData.length; i++) {
+    const x = (i / processedData.length) * width + barWidth / 2;
+    const y = (1 - processedData[i]) * amp;
+    ctx.moveTo(x, amp);
+    ctx.lineTo(x, y);
+  }
+  ctx.stroke();
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   FormControl,
-  FormLabel,
   Paper,
   Typography,
   Box,
@@ -94,6 +93,7 @@ const AudioSettings: React.FC<AudioSettingsProps> = ({
       </Box>
 
 
+      <Typography variant="subtitle1">編集</Typography>
       <Box sx={{ display: 'flex', gap: 4, mt: 2, flexWrap: 'wrap' }}>
         <FormControl component="fieldset" sx={{ minWidth: 200 }}>
           <InputLabel id="sampling-frequency-label">サンプリング周波数</InputLabel>
@@ -134,7 +134,7 @@ const AudioSettings: React.FC<AudioSettingsProps> = ({
 
       {/* 再生セクション */}
       <Box sx={{ my: 2 }}>
-        <Typography variant="subtitle1">再生</Typography>
+        <Typography variant="subtitle1">編集したものを再生</Typography>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button variant="contained" onClick={handlePlay} disabled={!audioURL || isPlaying}>再生</Button>
           <Button variant="outlined" onClick={handleStopPlayback} disabled={!isPlaying}>停止</Button>

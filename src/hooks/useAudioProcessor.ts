@@ -16,6 +16,10 @@ export const useAudioProcessor = (sampleRate: number, bitDepth: number) => {
   const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
 
   const handleStartRecording = async () => {
+    // Resume AudioContext on user gesture
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -47,7 +51,7 @@ export const useAudioProcessor = (sampleRate: number, bitDepth: number) => {
         if (mediaRecorderRef.current?.state === 'recording') {
           handleStopRecording();
         }
-      }, 10000);
+      }, 5000);
 
     } catch (err) {
       console.error("マイクへのアクセスが拒否されました。", err);
@@ -66,6 +70,11 @@ export const useAudioProcessor = (sampleRate: number, bitDepth: number) => {
     if (!audioBuffer) {
       console.warn("No audio buffer to play.");
       return;
+    }
+
+    // Resume AudioContext if it's suspended
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
     }
 
     if (isPlaying) {

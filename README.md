@@ -1,69 +1,65 @@
-# React + TypeScript + Vite
+# Sound Digitization App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+これは、音のデジタル化の仕組みを視覚的に学び、体験するための教育用ウェブアプリケーションです。マイクから入力された音声を波形で表示し、サンプリング周波数や量子化ビット数を変更することで、音質やデータ量がどう変化するかを直感的に理解することを目的としています。
 
-Currently, two official plugins are available:
+## 主な機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **マイクからの音声録音**: 最大5秒間の音声をブラウザで直接録音します。
+- **リアルタイム波形表示**: 録音された音声をCanvas上に波形として描画します。サンプリング周波数を変更すると、波形の「カクカク感」が変化し、デジタルデータの離散的な性質を視覚的に確認できます。
+- **パラメータのインタラクティブな変更**:
+  - **サンプリング周波数**: 複数の周波数設定を切り替え、波形の密度が変化する様子を確認できます。
+  - **量子化ビット数**: ビット数を変更し、波形の振幅の解像度が変わる様子を体験できます。
+- **設定の即時反映**: パラメータを変更すると、波形表示とデータ量の理論値がリアルタイムで更新されます。
+- **音声の再生**: 変更した設定を適用した音声データを生成し、再生することができます。
+- **WAVエクスポート**: 現在の設定を反映した音声をWAVファイルとしてダウンロードできます。
 
-## Expanding the ESLint configuration
+## 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **フロントエンド**: React, TypeScript
+- **UIライブラリ**: Material-UI (MUI)
+- **ビルドツール**: Vite
+- **音声処理**: Web Audio API, AudioWorklet
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 開発環境のセットアップ
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Dockerを利用する場合
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  リポジトリをクローンします。
+    ```bash
+    git clone [リポジトリのURL]
+    cd sound-digitization-app
+    ```
+2.  Docker Composeを使ってアプリケーションをビルドし、起動します。
+    ```bash
+    docker-compose up --build
+    ```
+3.  ブラウザで `http://localhost:5173` にアクセスします。
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Dockerを利用しない場合 (ローカル環境)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1.  リポジトリをクローンします。
+    ```bash
+    git clone [リポジトリのURL]
+    cd sound-digitization-app
+    ```
+2.  依存関係をインストールします。
+    ```bash
+    npm install
+    ```
+3.  開発サーバーを起動します。
+    ```bash
+    npm run dev
+    ```
+4.  ブラウザで表示されたURLにアクセスします（通常は `http://localhost:5173`）。
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 使い方
+
+1.  **録音**: 「録音開始」ボタンを押して、マイクに向かって5秒間話したり音を出したりします。録音は自動で停止します。
+2.  **観察**: 画面に表示された音声波形を観察します。
+3.  **設定変更**: 右側のパネルでサンプリング周波数や量子化ビット数のラジオボタンを選択します。波形やデータ量の表示がリアルタイムで変わることを確認してください。
+4.  **再生**: 「再生」ボタンを押して、現在の設定が適用された音を聴いてみましょう。
+5.  **エクスポート**: 「WAVエクスポート」ボタンを押すと、処理後の音声がWAVファイルとして保存されます。
+
+## 貢献
+
+このプロジェクトへの貢献を歓迎します。バグ報告や機能提案は、GitHubのIssuesをご利用ください。

@@ -14,7 +14,7 @@ export const WaveformDisplay = ({ audioBuffer, sampleRate, bitDepth }: WaveformD
   const [canvasWidth, setCanvasWidth] = useState(0);
 
   // Define a base width per second for the waveform
-  const pixelsPerSecond = 4410; // 0.1 seconds = 160px, so 1 second = 1600px
+  const pixelsPerSecond = 17640; // 0.1 seconds = 160px, so 1 second = 1600px
 
   useEffect(() => {
     const container = containerRef.current;

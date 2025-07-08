@@ -1,3 +1,4 @@
+// @ts-ignore
 class AudioProcessor extends AudioWorkletProcessor {
   private targetSampleRate: number;
   private targetBitDepth: number;
@@ -8,6 +9,7 @@ class AudioProcessor extends AudioWorkletProcessor {
     this.targetSampleRate = 44100; // Default to common sample rate
     this.targetBitDepth = 16;    // Default to common bit depth
 
+    // @ts-ignore
     this.port.onmessage = (event) => {
       if (event.data.type === 'init') {
         this.targetSampleRate = event.data.sampleRate;
@@ -22,7 +24,7 @@ class AudioProcessor extends AudioWorkletProcessor {
    * For higher quality or more complex scenarios, dedicated libraries or OfflineAudioContext
    * for offline processing would be more suitable.
    */
-  process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
+  process(inputs: Float32Array[][], outputs: Float32Array[][]): boolean {
     const input = inputs[0];
     const output = outputs[0];
 
@@ -33,6 +35,7 @@ class AudioProcessor extends AudioWorkletProcessor {
     const inputChannelData = input[0]; // Assuming mono input
     const outputChannelData = output[0];
 
+    // @ts-ignore
     const currentContextSampleRate = sampleRate; // Global `sampleRate` in AudioWorklet scope
 
     // Calculate the resampling ratio
@@ -73,4 +76,5 @@ class AudioProcessor extends AudioWorkletProcessor {
   }
 }
 
+// @ts-ignore
 registerProcessor('audio-processor', AudioProcessor);
