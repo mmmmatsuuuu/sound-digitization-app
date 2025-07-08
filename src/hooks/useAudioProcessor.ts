@@ -142,7 +142,7 @@ export const useAudioProcessor = (sampleRate: number, bitDepth: number) => {
       );
 
       // Load the AudioWorklet module into the offline context
-      await offlineContext.audioWorklet.addModule('/src/audio-worklets/AudioProcessor.ts');
+      await offlineContext.audioWorklet.addModule(new URL('../audio-worklets/AudioProcessor.ts', import.meta.url).href);
 
       const sourceNode = offlineContext.createBufferSource();
       sourceNode.buffer = audioBuffer;
