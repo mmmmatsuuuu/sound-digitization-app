@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Container, Typography, Grid } from '@mui/material';
+import { useAudioProcessor } from './hooks/useAudioProcessor';
+import { WaveformDisplay } from './components/WaveformDisplay';
+import AudioSettings from './components/AudioSettings';
+import React from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sampleRate, setSampleRate] = React.useState(44100);
+  const [bitDepth, setBitDepth] = React.useState(16);
+  const audioProcessor = useAudioProcessor(sampleRate, bitDepth);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Container maxWidth="lg" sx={{ mt: 4, mx: 'auto', mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        🔈 音声のデジタル化体験ツール 🔈
+      </Typography>
+
+      <Grid container spacing={2}>
+        {/* @ts-ignore */}
+        <Grid item xs={12} md={3}>
+          <AudioSettings 
+            sampleRate={sampleRate}
+            bitDepth={bitDepth}
+            setSampleRate={setSampleRate}
+            setBitDepth={setBitDepth}
+            duration={audioProcessor.duration}
+            isRecording={audioProcessor.isRecording}
+            audioURL={audioProcessor.audioURL}
+            handleStartRecording={audioProcessor.handleStartRecording}
+            handleStopRecording={audioProcessor.handleStopRecording}
+            handlePlay={audioProcessor.handlePlay}
+            handleStopPlayback={audioProcessor.handleStopPlayback}
+            isPlaying={audioProcessor.isPlaying}
+            handleExport={audioProcessor.handleExport}
+          />
+        </Grid>
+        {/* @ts-ignore */}
+        <Grid item xs={12} md={9}>
+          <WaveformDisplay 
+            audioBuffer={audioProcessor.audioBuffer}
+            sampleRate={sampleRate}
+            bitDepth={bitDepth}
+          />
+        </Grid>
+      </Grid>
+    </Container>
+  );
 }
 
-export default App
+export default App;
