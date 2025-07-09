@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { loadAudioWorklet } from '../audio-worklets/workletLoader';
 import { audioBufferToWav } from '../utils/audioExportUtils';
+// import workletURL from '../audio-worklets/audioProcessor.js?url';
 
 const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
@@ -142,7 +143,8 @@ export const useAudioProcessor = (sampleRate: number, bitDepth: number) => {
       );
 
       // Load the AudioWorklet module into the offline context
-      await offlineContext.audioWorklet.addModule(new URL('../audio-worklets/AudioProcessor.ts', import.meta.url).href);
+      // await offlineContext.audioWorklet.addModule(workletURL);
+      await offlineContext.audioWorklet.addModule('./worklets/AudioProcessor.js');
 
       const sourceNode = offlineContext.createBufferSource();
       sourceNode.buffer = audioBuffer;
